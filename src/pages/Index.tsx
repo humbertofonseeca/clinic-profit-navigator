@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DashboardHeader } from '@/components/DashboardHeader';
+import { ConsolidatedDashboard } from '@/components/ConsolidatedDashboard';
 import { MetricCard } from '@/components/MetricCard';
 import { ChartContainer } from '@/components/ChartContainer';
 import { PatientTable } from '@/components/PatientTable';
@@ -57,6 +58,14 @@ const Index = () => {
           selectedPeriod={selectedPeriod}
           onPeriodChange={setSelectedPeriod}
         />
+
+        {/* Dashboard Consolidado */}
+        <div className="mb-8">
+          <ConsolidatedDashboard 
+            selectedPeriod={selectedPeriod}
+            selectedClinic={selectedClinic}
+          />
+        </div>
 
         {/* Métricas Principais */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
