@@ -69,8 +69,8 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
         </h1>
       </div>
 
-      {/* Subheader cinza escuro */}
-      <div className="bg-secondary text-secondary-foreground p-4">
+      {/* Subheader cinza */}
+      <div className="bg-muted-foreground text-white p-4">
         <div className="text-center">
           <h2 className="text-lg font-semibold">DASHBOARD DE RESULTADOS CONSOLIDADOS</h2>
           <p className="text-sm opacity-90">Data Inicial: {getPeriodText()}</p>
@@ -78,72 +78,72 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
       </div>
 
       {/* Primeira linha de métricas */}
-      <div className="bg-secondary text-secondary-foreground border-t border-border">
+      <div className="bg-muted-foreground text-white">
         <div className="grid grid-cols-4 gap-0">
-          <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Investimento Total</div>
+          <div className="p-4 text-center border-r border-gray-600">
+            <div className="text-xs mb-1">Investimento Total</div>
             <div className="text-lg font-bold">{formatCurrency(dashboardData.investimentoTotal)}</div>
           </div>
-          <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Valor Utilizado</div>
+          <div className="p-4 text-center border-r border-gray-600">
+            <div className="text-xs mb-1">Valor Utilizado</div>
             <div className="text-lg font-bold">{formatCurrency(dashboardData.valorUtilizado)}</div>
           </div>
-          <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Custo por Paciente</div>
+          <div className="p-4 text-center border-r border-gray-600">
+            <div className="text-xs mb-1">Custo por Paciente</div>
             <div className="text-lg font-bold">{formatCurrency(dashboardData.custoPorPaciente)}</div>
           </div>
           <div className="p-4 text-center">
-            <div className="text-xs mb-1 text-muted-foreground">LTV Médio</div>
+            <div className="text-xs mb-1">LTV Médio</div>
             <div className="text-lg font-bold">{formatCurrency(dashboardData.ltvMedio)}</div>
           </div>
         </div>
       </div>
 
       {/* Segunda linha de métricas */}
-      <div className="bg-secondary text-secondary-foreground">
-        <div className="grid grid-cols-2 gap-0 border-t border-border">
-          <div className="p-6 text-center border-r border-border">
-            <div className="text-sm mb-2 text-muted-foreground">Faturamento Bruto</div>
+      <div className="bg-muted-foreground text-white">
+        <div className="grid grid-cols-2 gap-0 border-t border-gray-600">
+          <div className="p-6 text-center border-r border-gray-600">
+            <div className="text-sm mb-2">Faturamento Bruto</div>
             <div className="text-2xl font-bold">{formatCurrency(dashboardData.faturamentoBruto)}</div>
           </div>
           <div className="p-6 text-center">
-            <div className="text-sm mb-2 text-muted-foreground">Faturamento Líquido</div>
+            <div className="text-sm mb-2">Faturamento Líquido</div>
             <div className="text-2xl font-bold">{formatCurrency(dashboardData.faturamentoLiquido)}</div>
           </div>
         </div>
       </div>
 
       {/* Terceira linha - ROAS e ROI */}
-      <div className="bg-secondary text-secondary-foreground">
-        <div className="grid grid-cols-2 gap-0 border-t border-border">
-          <div className="p-6 text-center border-r border-border">
-            <div className="text-sm mb-2 text-muted-foreground">Retorno sobre Investimento em Publicidade (ROAS)</div>
+      <div className="bg-muted-foreground text-white">
+        <div className="grid grid-cols-2 gap-0 border-t border-gray-600">
+          <div className="p-6 text-center border-r border-gray-600">
+            <div className="text-sm mb-2">Retorno sobre Investimento em Publicidade (ROAS)</div>
             <div className="text-3xl font-bold">{dashboardData.roas.toFixed(2)}</div>
           </div>
           <div className="p-6 text-center">
-            <div className="text-sm mb-2 text-muted-foreground">Retorno sobre Investimento (ROI)</div>
+            <div className="text-sm mb-2">Retorno sobre Investimento (ROI)</div>
             <div className="text-3xl font-bold">{dashboardData.roi.toFixed(2)}</div>
           </div>
         </div>
       </div>
 
       {/* Quarta linha - Números de pacientes */}
-      <div className="bg-secondary text-secondary-foreground">
-        <div className="grid grid-cols-4 gap-0 border-t border-border">
-          <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Pacientes Adquiridos</div>
+      <div className="bg-muted-foreground text-white">
+        <div className="grid grid-cols-4 gap-0 border-t border-gray-600">
+          <div className="p-4 text-center border-r border-gray-600">
+            <div className="text-xs mb-1">Pacientes Adquiridos</div>
             <div className="text-2xl font-bold">{formatNumber(dashboardData.pacientesAdquiridos)}</div>
           </div>
-          <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Agendados</div>
+          <div className="p-4 text-center border-r border-gray-600">
+            <div className="text-xs mb-1">Agendados</div>
             <div className="text-2xl font-bold">{formatNumber(dashboardData.pacientesAgendados)}</div>
           </div>
-          <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Efetivados</div>
+          <div className="p-4 text-center border-r border-gray-600">
+            <div className="text-xs mb-1">Efetivados</div>
             <div className="text-2xl font-bold">{formatNumber(dashboardData.pacientesEfetivados)}</div>
           </div>
           <div className="p-4 text-center">
-            <div className="text-xs mb-1 text-muted-foreground">No-Show</div>
+            <div className="text-xs mb-1">No-Show</div>
             <div className="text-2xl font-bold">{formatNumber(dashboardData.noShow)}</div>
           </div>
         </div>
