@@ -1,11 +1,12 @@
 import { Card } from '@/components/ui/card';
-
 interface ConsolidatedDashboardProps {
   selectedPeriod: string;
   selectedClinic: string;
 }
-
-export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: ConsolidatedDashboardProps) => {
+export const ConsolidatedDashboard = ({
+  selectedPeriod,
+  selectedClinic
+}: ConsolidatedDashboardProps) => {
   // Mock data - seria substituído por dados reais do Supabase
   const dashboardData = {
     dataInicial: '01/08/2025',
@@ -39,24 +40,22 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
       procedimentos: 129000.00
     }
   };
-
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
   };
-
   const formatPercentage = (value: number) => {
     return `${value.toFixed(2)}%`;
   };
-
   const formatNumber = (value: number) => {
     return value.toString();
   };
-
   const getPeriodText = () => {
-    const periods: { [key: string]: string } = {
+    const periods: {
+      [key: string]: string;
+    } = {
       '7d': '01/08/2025 | Data Final: 08/08/2025',
       '30d': '01/08/2025 | Data Final: 31/08/2025',
       '90d': '01/06/2025 | Data Final: 31/08/2025',
@@ -64,21 +63,15 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
     };
     return periods[selectedPeriod] || periods['30d'];
   };
-
-  return (
-    <div className="w-full max-w-7xl mx-auto space-y-0">
+  return <div className="w-full max-w-7xl mx-auto space-y-0">
       {/* Header azul */}
-      <div className="bg-primary text-primary-foreground p-6 rounded-t-xl">
-        <h1 className="text-2xl font-bold text-center">
-          DASHBOARD CONSOLIDADO - LTV E PERFORMANCE DE MARKETING
-        </h1>
-      </div>
+      
 
       {/* Subheader cinza escuro */}
       <div className="bg-secondary text-secondary-foreground p-4">
         <div className="text-center">
-          <h2 className="text-lg font-semibold">DASHBOARD DE RESULTADOS CONSOLIDADOS</h2>
-          <p className="text-sm opacity-90">Data Inicial: {dashboardData.dataInicial} | Data Final: {dashboardData.dataFinal}</p>
+          
+          
         </div>
       </div>
 
@@ -198,7 +191,7 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
           <Card className="p-4 bg-accent-success/10 border-l-4 border-l-accent-success">
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">Performance:</h4>
             <p className="text-base text-foreground">
-              {dashboardData.pacientesEfetivados} pacientes efetivados<br/>
+              {dashboardData.pacientesEfetivados} pacientes efetivados<br />
               {formatPercentage(dashboardData.taxaComparecimento)} de comparecimento
             </p>
           </Card>
@@ -213,7 +206,7 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
           <Card className="p-4 bg-accent-success/10 border-l-4 border-l-accent-success">
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">Receita Gerada:</h4>
             <p className="text-base text-foreground">
-              {formatCurrency(dashboardData.faturamentoBruto)} bruto<br/>
+              {formatCurrency(dashboardData.faturamentoBruto)} bruto<br />
               {formatCurrency(dashboardData.faturamentoLiquido)} líquido
             </p>
           </Card>
@@ -233,6 +226,5 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
           </Card>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
