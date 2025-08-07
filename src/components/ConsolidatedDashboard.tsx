@@ -98,7 +98,7 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
             <div className="text-lg font-bold">{formatNumber(dashboardData.mensagensRecebidas)}</div>
           </div>
           <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Custo por Mensagem</div>
+            <div className="text-xs mb-1 text-muted-foreground">Custo por Mensagem Recebida</div>
             <div className="text-lg font-bold">{formatCurrency(dashboardData.custoPorMensagem)}</div>
           </div>
           <div className="p-4 text-center border-r border-border">
