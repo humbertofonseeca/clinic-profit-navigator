@@ -8,10 +8,14 @@ interface ConsolidatedDashboardProps {
 export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: ConsolidatedDashboardProps) => {
   // Mock data - seria substituído por dados reais do Supabase
   const dashboardData = {
+    dataInicial: '01/08/2025',
+    dataFinal: '08/08/2025',
     investimentoTotal: 50000.00,
     valorUtilizado: 47500.00,
     custoPorPaciente: 285.00,
     custoPorConsulta: 156.50,
+    mensagensRecebidas: 2340,
+    custoPorMensagem: 20.30,
     faturamentoBruto: 285000.00,
     faturamentoLiquido: 198000.00,
     roas: 5.68,
@@ -24,6 +28,7 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
     taxaComparecimento: 83.10,
     taxaNoShow: 16.90,
     ltvMedio: 2850.00,
+    cacMedio: 299.40,
     investimento: {
       googleAds: 28500.00,
       facebookAds: 15000.00,
@@ -73,13 +78,13 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
       <div className="bg-secondary text-secondary-foreground p-4">
         <div className="text-center">
           <h2 className="text-lg font-semibold">DASHBOARD DE RESULTADOS CONSOLIDADOS</h2>
-          <p className="text-sm opacity-90">Data Inicial: {getPeriodText()}</p>
+          <p className="text-sm opacity-90">Data Inicial: {dashboardData.dataInicial} | Data Final: {dashboardData.dataFinal}</p>
         </div>
       </div>
 
       {/* Primeira linha de métricas */}
       <div className="bg-secondary text-secondary-foreground border-t border-border">
-        <div className="grid grid-cols-4 gap-0">
+        <div className="grid grid-cols-6 gap-0">
           <div className="p-4 text-center border-r border-border">
             <div className="text-xs mb-1 text-muted-foreground">Investimento Total</div>
             <div className="text-lg font-bold">{formatCurrency(dashboardData.investimentoTotal)}</div>
@@ -87,6 +92,14 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
           <div className="p-4 text-center border-r border-border">
             <div className="text-xs mb-1 text-muted-foreground">Valor Utilizado</div>
             <div className="text-lg font-bold">{formatCurrency(dashboardData.valorUtilizado)}</div>
+          </div>
+          <div className="p-4 text-center border-r border-border">
+            <div className="text-xs mb-1 text-muted-foreground">Mensagens Recebidas</div>
+            <div className="text-lg font-bold">{formatNumber(dashboardData.mensagensRecebidas)}</div>
+          </div>
+          <div className="p-4 text-center border-r border-border">
+            <div className="text-xs mb-1 text-muted-foreground">Custo por Mensagem</div>
+            <div className="text-lg font-bold">{formatCurrency(dashboardData.custoPorMensagem)}</div>
           </div>
           <div className="p-4 text-center border-r border-border">
             <div className="text-xs mb-1 text-muted-foreground">Custo por Paciente</div>
@@ -127,7 +140,7 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
         </div>
       </div>
 
-      {/* Quarta linha - Números de pacientes */}
+      {/* Quarta linha - Métricas finais */}
       <div className="bg-secondary text-secondary-foreground">
         <div className="grid grid-cols-4 gap-0 border-t border-border">
           <div className="p-4 text-center border-r border-border">
@@ -135,16 +148,16 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
             <div className="text-2xl font-bold">{formatNumber(dashboardData.pacientesAdquiridos)}</div>
           </div>
           <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Agendados</div>
-            <div className="text-2xl font-bold">{formatNumber(dashboardData.pacientesAgendados)}</div>
+            <div className="text-xs mb-1 text-muted-foreground">CAC Médio</div>
+            <div className="text-2xl font-bold">{formatCurrency(dashboardData.cacMedio)}</div>
           </div>
           <div className="p-4 text-center border-r border-border">
-            <div className="text-xs mb-1 text-muted-foreground">Efetivados</div>
-            <div className="text-2xl font-bold">{formatNumber(dashboardData.pacientesEfetivados)}</div>
+            <div className="text-xs mb-1 text-muted-foreground">LTV Médio</div>
+            <div className="text-2xl font-bold">{formatCurrency(dashboardData.ltvMedio)}</div>
           </div>
           <div className="p-4 text-center">
-            <div className="text-xs mb-1 text-muted-foreground">No-Show</div>
-            <div className="text-2xl font-bold">{formatNumber(dashboardData.noShow)}</div>
+            <div className="text-xs mb-1 text-muted-foreground">ROI</div>
+            <div className="text-2xl font-bold">{dashboardData.roi.toFixed(2)}</div>
           </div>
         </div>
       </div>
@@ -183,10 +196,10 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
           </Card>
 
           <Card className="p-4 bg-accent-success/10 border-l-4 border-l-accent-success">
-            <h4 className="font-semibold text-sm text-muted-foreground mb-2">Receita Gerada:</h4>
+            <h4 className="font-semibold text-sm text-muted-foreground mb-2">Performance:</h4>
             <p className="text-base text-foreground">
-              {formatCurrency(dashboardData.faturamentoBruto)} bruto<br/>
-              {formatCurrency(dashboardData.faturamentoLiquido)} líquido
+              {dashboardData.pacientesEfetivados} pacientes efetivados<br/>
+              {formatPercentage(dashboardData.taxaComparecimento)} de comparecimento
             </p>
           </Card>
 
@@ -197,18 +210,11 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
             </p>
           </Card>
 
-          <Card className="p-4 bg-primary-light border-l-4 border-l-primary">
-            <h4 className="font-semibold text-sm text-muted-foreground mb-2">ROI Médio:</h4>
-            <p className="text-base text-foreground">
-              {dashboardData.roi.toFixed(2)} ({((dashboardData.roi - 1) * 100).toFixed(0)}% de retorno)
-            </p>
-          </Card>
-
           <Card className="p-4 bg-accent-success/10 border-l-4 border-l-accent-success">
-            <h4 className="font-semibold text-sm text-muted-foreground mb-2">Performance:</h4>
+            <h4 className="font-semibold text-sm text-muted-foreground mb-2">Receita Gerada:</h4>
             <p className="text-base text-foreground">
-              {dashboardData.pacientesEfetivados} pacientes efetivados<br/>
-              {formatPercentage(dashboardData.taxaComparecimento)} de comparecimento
+              {formatCurrency(dashboardData.faturamentoBruto)} bruto<br/>
+              {formatCurrency(dashboardData.faturamentoLiquido)} líquido
             </p>
           </Card>
 
@@ -216,6 +222,13 @@ export const ConsolidatedDashboard = ({ selectedPeriod, selectedClinic }: Consol
             <h4 className="font-semibold text-sm text-muted-foreground mb-2">LTV por Paciente:</h4>
             <p className="text-base text-foreground">
               {formatCurrency(dashboardData.ltvMedio)} por paciente efetivado
+            </p>
+          </Card>
+
+          <Card className="p-4 bg-primary-light border-l-4 border-l-primary">
+            <h4 className="font-semibold text-sm text-muted-foreground mb-2">ROI Médio:</h4>
+            <p className="text-base text-foreground">
+              {dashboardData.roi.toFixed(2)} ({((dashboardData.roi - 1) * 100).toFixed(0)}% de retorno)
             </p>
           </Card>
         </div>
