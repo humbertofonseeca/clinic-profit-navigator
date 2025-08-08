@@ -1,11 +1,16 @@
 import { Card } from '@/components/ui/card';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
 interface ConsolidatedDashboardProps {
-  selectedPeriod: string;
   selectedClinic: string;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
 }
 export const ConsolidatedDashboard = ({
-  selectedPeriod,
-  selectedClinic
+  selectedClinic,
+  startDate,
+  endDate
 }: ConsolidatedDashboardProps) => {
   // Mock data - seria substituído por dados reais do Supabase
   const dashboardData = {
@@ -52,16 +57,11 @@ export const ConsolidatedDashboard = ({
   const formatNumber = (value: number) => {
     return value.toString();
   };
-  const getPeriodText = () => {
-    const periods: {
-      [key: string]: string;
-    } = {
-      '7d': '01/08/2025 | Data Final: 08/08/2025',
-      '30d': '01/08/2025 | Data Final: 31/08/2025',
-      '90d': '01/06/2025 | Data Final: 31/08/2025',
-      '1y': '01/08/2024 | Data Final: 31/08/2025'
-    };
-    return periods[selectedPeriod] || periods['30d'];
+  const getDateRangeText = () => {
+    if (startDate && endDate) {
+      return `${format(startDate, "dd/MM/yyyy", { locale: ptBR })} - ${format(endDate, "dd/MM/yyyy", { locale: ptBR })}`;
+    }
+    return "Selecione o período";
   };
   return <div className="w-full max-w-7xl mx-auto space-y-0">
       {/* Header azul */}

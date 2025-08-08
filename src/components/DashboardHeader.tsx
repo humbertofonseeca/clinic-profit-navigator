@@ -1,18 +1,23 @@
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DateRangePicker } from '@/components/DateRangePicker';
 
 interface DashboardHeaderProps {
   selectedClinic: string;
   onClinicChange: (clinic: string) => void;
-  selectedPeriod: string;
-  onPeriodChange: (period: string) => void;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  onStartDateChange: (date: Date | undefined) => void;
+  onEndDateChange: (date: Date | undefined) => void;
 }
 
 export const DashboardHeader = ({
   selectedClinic,
   onClinicChange,
-  selectedPeriod,
-  onPeriodChange
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange
 }: DashboardHeaderProps) => {
   return (
     <div className="bg-card shadow-card rounded-xl p-6 mb-8">
@@ -39,17 +44,12 @@ export const DashboardHeader = ({
             </SelectContent>
           </Select>
           
-          <Select value={selectedPeriod} onValueChange={onPeriodChange}>
-            <SelectTrigger className="w-full sm:w-[160px]">
-              <SelectValue placeholder="Período" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7d">Últimos 7 dias</SelectItem>
-              <SelectItem value="30d">Últimos 30 dias</SelectItem>
-              <SelectItem value="90d">Últimos 90 dias</SelectItem>
-              <SelectItem value="1y">Último ano</SelectItem>
-            </SelectContent>
-          </Select>
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={onStartDateChange}
+            onEndDateChange={onEndDateChange}
+          />
           
           <Button variant="outline" className="whitespace-nowrap">
             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

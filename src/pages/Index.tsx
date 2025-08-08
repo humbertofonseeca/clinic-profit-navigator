@@ -47,7 +47,8 @@ const mockPatients = [
 
 const Index = () => {
   const [selectedClinic, setSelectedClinic] = useState('all');
-  const [selectedPeriod, setSelectedPeriod] = useState('30d');
+  const [startDate, setStartDate] = useState<Date | undefined>(new Date(2025, 7, 1)); // 1º de agosto de 2025
+  const [endDate, setEndDate] = useState<Date | undefined>(new Date(2025, 7, 8)); // 8 de agosto de 2025
 
   return (
     <div className="min-h-screen bg-background">
@@ -55,15 +56,18 @@ const Index = () => {
         <DashboardHeader
           selectedClinic={selectedClinic}
           onClinicChange={setSelectedClinic}
-          selectedPeriod={selectedPeriod}
-          onPeriodChange={setSelectedPeriod}
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={setStartDate}
+          onEndDateChange={setEndDate}
         />
 
         {/* Dashboard Consolidado */}
         <div className="mb-8">
           <ConsolidatedDashboard 
-            selectedPeriod={selectedPeriod}
             selectedClinic={selectedClinic}
+            startDate={startDate}
+            endDate={endDate}
           />
         </div>
 
