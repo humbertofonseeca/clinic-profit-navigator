@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { ConsolidatedDashboard } from '@/components/ConsolidatedDashboard';
 import { MetricCard } from '@/components/MetricCard';
@@ -45,34 +47,61 @@ const mockPatients = [
   }
 ];
 
+interface Clinic {
+  id: string;
+  name: string;
+}
+
 const Index = () => {
+  const { userRole } = useAuth();
   const [selectedClinic, setSelectedClinic] = useState('all');
   const [startDate, setStartDate] = useState<Date | undefined>(new Date(2025, 7, 1)); // 1º de agosto de 2025
   const [endDate, setEndDate] = useState<Date | undefined>(new Date(2025, 7, 8)); // 8 de agosto de 2025
+  const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchClinics();
+    setLoading(false);
+  }, []);
+
+  const fetchClinics = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('clinics')
+        .select('id, name');
+
+      if (error) throw error;
+      setClinics(data || []);
+    } catch (error) {
+      console.error('Error fetching clinics:', error);
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center py-12">Carregando...</div>;
+  }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <DashboardHeader
-          selectedClinic={selectedClinic}
-          onClinicChange={setSelectedClinic}
-          startDate={startDate}
-          endDate={endDate}
-          onStartDateChange={setStartDate}
-          onEndDateChange={setEndDate}
-        />
+    <div className="space-y-8">
+      <DashboardHeader
+        selectedClinic={selectedClinic}
+        onClinicChange={setSelectedClinic}
+        startDate={startDate}
+        endDate={endDate}
+        onStartDateChange={setStartDate}
+        onEndDateChange={setEndDate}
+      />
 
-        {/* Dashboard Consolidado */}
-        <div className="mb-8">
-          <ConsolidatedDashboard 
-            selectedClinic={selectedClinic}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        </div>
+      {/* Dashboard Consolidado */}
+      <ConsolidatedDashboard 
+        selectedClinic={selectedClinic}
+        startDate={startDate}
+        endDate={endDate}
+      />
 
-        {/* Métricas Principais */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Métricas Principais */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <MetricCard
             title="LTV Médio"
             value={2287.50}
@@ -129,10 +158,10 @@ const Index = () => {
               </svg>
             }
           />
-        </div>
+      </div>
 
-        {/* Gráficos */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      {/* Gráficos */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ChartContainer
             title="Evolução do LTV"
             description="Lifetime Value médio por mês dos últimos 6 meses"
@@ -163,11 +192,10 @@ const Index = () => {
               </div>
             </div>
           </ChartContainer>
-        </div>
-
-        {/* Tabela de Pacientes */}
-        <PatientTable patients={mockPatients} />
       </div>
+
+      {/* Tabela de Pacientes */}
+      <PatientTable patients={mockPatients} />
     </div>
   );
 };
