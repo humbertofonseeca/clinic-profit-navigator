@@ -9,9 +9,11 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, User, Search, Mail, Phone, Calendar, MapPin, Edit } from 'lucide-react';
+import { Plus, User, Search, Mail, Phone, Calendar, MapPin, Edit, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { PatientAssignments } from '@/components/PatientAssignments';
+import { validateCPF, validatePhoneNumber, validateEmail, formatCPF, formatPhoneNumber, sanitizeInput } from '@/lib/validation';
 
 interface Patient {
   id: string;
@@ -55,6 +57,7 @@ export default function Pacientes() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
     fetchPatients();
@@ -105,16 +108,49 @@ export default function Pacientes() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     
+    // Validate and sanitize input data
+    const errors: {[key: string]: string} = {};
+    
+    const name = sanitizeInput(formData.get('name') as string);
+    const email = sanitizeInput(formData.get('email') as string) || null;
+    const phone = sanitizeInput(formData.get('phone') as string) || null;
+    const cpf = sanitizeInput(formData.get('cpf') as string) || null;
+    const address = sanitizeInput(formData.get('address') as string) || null;
+    const insurance = sanitizeInput(formData.get('insurance') as string) || null;
+    const notes = sanitizeInput(formData.get('notes') as string) || null;
+    
+    // Validate CPF
+    if (cpf && !validateCPF(cpf)) {
+      errors.cpf = 'CPF inválido';
+    }
+    
+    // Validate email
+    if (email && !validateEmail(email)) {
+      errors.email = 'Email inválido';
+    }
+    
+    // Validate phone
+    if (phone && !validatePhoneNumber(phone)) {
+      errors.phone = 'Telefone inválido';
+    }
+    
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+    
+    setValidationErrors({});
+    
     const patientData = {
-      name: formData.get('name') as string,
-      email: formData.get('email') as string || null,
-      phone: formData.get('phone') as string || null,
+      name,
+      email,
+      phone,
       birth_date: formData.get('birth_date') as string || null,
-      cpf: formData.get('cpf') as string || null,
-      address: formData.get('address') as string || null,
-      insurance: formData.get('insurance') as string || null,
+      cpf,
+      address,
+      insurance,
       source: formData.get('source') as string || null,
-      notes: formData.get('notes') as string || null,
+      notes,
       clinic_id: formData.get('clinic_id') as string,
     };
 
@@ -247,6 +283,12 @@ export default function Pacientes() {
                     defaultValue={editingPatient?.email || ''}
                     placeholder="email@exemplo.com"
                   />
+                  {validationErrors.email && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{validationErrors.email}</AlertDescription>
+                    </Alert>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Telefone</Label>
@@ -255,7 +297,16 @@ export default function Pacientes() {
                     name="phone"
                     defaultValue={editingPatient?.phone || ''}
                     placeholder="(11) 99999-9999"
+                    onChange={(e) => {
+                      e.target.value = formatPhoneNumber(e.target.value);
+                    }}
                   />
+                  {validationErrors.phone && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{validationErrors.phone}</AlertDescription>
+                    </Alert>
+                  )}
                 </div>
               </div>
 
@@ -276,7 +327,16 @@ export default function Pacientes() {
                     name="cpf"
                     defaultValue={editingPatient?.cpf || ''}
                     placeholder="000.000.000-00"
+                    onChange={(e) => {
+                      e.target.value = formatCPF(e.target.value);
+                    }}
                   />
+                  {validationErrors.cpf && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>{validationErrors.cpf}</AlertDescription>
+                    </Alert>
+                  )}
                 </div>
               </div>
 

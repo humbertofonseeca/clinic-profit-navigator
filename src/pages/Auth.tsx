@@ -7,12 +7,15 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { validatePasswordStrength, sanitizeInput } from '@/lib/validation';
 
 export default function Auth() {
   const { user, signIn, signUp, loading } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
 
   // Redirect if already authenticated
   if (user && !loading) {
@@ -24,7 +27,7 @@ export default function Auth() {
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
+    const email = sanitizeInput(formData.get('email') as string);
     const password = formData.get('password') as string;
 
     const { error } = await signIn(email, password);
@@ -43,11 +46,20 @@ export default function Auth() {
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setPasswordErrors([]);
 
     const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
+    const email = sanitizeInput(formData.get('email') as string);
     const password = formData.get('password') as string;
-    const name = formData.get('name') as string;
+    const name = sanitizeInput(formData.get('name') as string);
+
+    // Validate password strength
+    const passwordValidation = validatePasswordStrength(password);
+    if (!passwordValidation.isValid) {
+      setPasswordErrors(passwordValidation.errors);
+      setIsLoading(false);
+      return;
+    }
 
     const { error } = await signUp(email, password, name);
 
@@ -161,8 +173,20 @@ export default function Auth() {
                     type="password"
                     placeholder="••••••••"
                     required
-                    minLength={6}
+                    minLength={8}
                   />
+                  {passwordErrors.length > 0 && (
+                    <Alert variant="destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        <ul className="list-disc pl-4 space-y-1">
+                          {passwordErrors.map((error, index) => (
+                            <li key={index} className="text-sm">{error}</li>
+                          ))}
+                        </ul>
+                      </AlertDescription>
+                    </Alert>
+                  )}
                 </div>
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
