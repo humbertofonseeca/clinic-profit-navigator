@@ -83,7 +83,7 @@ const Index = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8 p-4 sm:p-0">{/* Responsive padding */}
       <DashboardHeader
         selectedClinic={selectedClinic}
         onClinicChange={setSelectedClinic}
@@ -101,7 +101,7 @@ const Index = () => {
       />
 
       {/* Métricas Principais */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">{/* Responsive grid */}
           <MetricCard
             title="LTV Médio"
             value={2287.50}
@@ -161,7 +161,7 @@ const Index = () => {
       </div>
 
       {/* Gráficos */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">{/* Responsive grid */}
           <ChartContainer
             title="Evolução do LTV"
             description="Lifetime Value médio por mês dos últimos 6 meses"

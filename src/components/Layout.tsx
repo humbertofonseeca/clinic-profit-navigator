@@ -45,8 +45,10 @@ export const Layout = ({ children }: LayoutProps) => {
     <div className="min-h-screen bg-background flex w-full">
       {/* Sidebar */}
       <div className={cn(
-        "bg-slate-900 text-white transition-all duration-300 flex flex-col",
-        collapsed ? "w-14" : "w-60"
+        "bg-slate-900 text-white transition-all duration-300 flex flex-col fixed lg:relative h-full z-40",
+        collapsed ? "w-14" : "w-60",
+        "lg:translate-x-0", // Always visible on desktop
+        collapsed ? "-translate-x-full lg:translate-x-0" : "translate-x-0" // Hidden on mobile when collapsed
       )}>
         {/* Logo */}
         <div className="p-4 border-b border-slate-700">
@@ -121,7 +123,11 @@ export const Layout = ({ children }: LayoutProps) => {
         {/* Toggle Button */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute -right-3 top-20 w-6 h-6 bg-slate-900 border border-slate-700 rounded-full flex items-center justify-center hover:bg-slate-800 transition-colors"
+          className={cn(
+            "absolute -right-3 top-20 w-6 h-6 bg-slate-900 border border-slate-700 rounded-full flex items-center justify-center hover:bg-slate-800 transition-colors z-50",
+            "lg:block", // Always visible on desktop
+            collapsed ? "hidden lg:block" : "block" // Hidden on mobile when sidebar is open
+          )}
         >
           <span className="text-xs">
             {collapsed ? '→' : '←'}
@@ -129,9 +135,39 @@ export const Layout = ({ children }: LayoutProps) => {
         </button>
       </div>
 
+      {/* Mobile Overlay */}
+      {!collapsed && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          onClick={() => setCollapsed(true)}
+        />
+      )}
+
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-6 overflow-auto">
+      <div className={cn(
+        "flex-1 flex flex-col transition-all duration-300",
+        "lg:ml-0", // No margin on desktop (sidebar is relative)
+        collapsed ? "ml-0" : "ml-0 lg:ml-0" // No margin needed (sidebar is fixed on mobile)
+      )}>
+        {/* Mobile Header */}
+        <div className="lg:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between">
+          <button
+            onClick={() => setCollapsed(false)}
+            className="p-2 rounded-lg hover:bg-slate-100"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">M</span>
+            </div>
+            <h1 className="font-bold text-lg">Medsense</h1>
+          </div>
+        </div>
+
+        <main className="flex-1 p-4 sm:p-6 overflow-auto">
           {children}
         </main>
       </div>
