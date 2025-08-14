@@ -220,6 +220,48 @@ export type Database = {
           },
         ]
       }
+      patient_staff_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_by: string
+          assignment_type: string
+          clinic_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          notes: string | null
+          patient_id: string
+          staff_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by: string
+          assignment_type?: string
+          clinic_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          patient_id: string
+          staff_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string
+          assignment_type?: string
+          clinic_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          notes?: string | null
+          patient_id?: string
+          staff_user_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       patients: {
         Row: {
           address: string | null

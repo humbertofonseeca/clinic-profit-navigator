@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, User, Search, Mail, Phone, Calendar, MapPin, Edit } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { PatientAssignments } from '@/components/PatientAssignments';
 
 interface Patient {
   id: string;
@@ -25,6 +26,19 @@ interface Patient {
   notes: string | null;
   clinic_id: string;
   created_at: string;
+  assigned_staff?: StaffAssignment[];
+}
+
+interface StaffAssignment {
+  id: string;
+  staff_user_id: string;
+  assignment_type: string;
+  assigned_at: string;
+  is_active: boolean;
+  staff_profile?: {
+    name: string;
+    email: string;
+  };
 }
 
 interface Clinic {
@@ -49,13 +63,20 @@ export default function Pacientes() {
 
   const fetchPatients = async () => {
     try {
+      // Fetch patients first
       const { data, error } = await supabase
         .from('patients')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPatients(data || []);
+      
+      // For now, set patients without assignments to avoid query issues
+      // We'll add the assignment component to individual patient cards later
+      setPatients((data || []).map(patient => ({
+        ...patient,
+        assigned_staff: []
+      })));
     } catch (error) {
       toast({
         title: 'Erro',
@@ -403,6 +424,17 @@ export default function Pacientes() {
                   {patient.notes}
                 </p>
               )}
+
+              {/* Patient Staff Assignments */}
+              <div className="mt-4">
+                <PatientAssignments
+                  patientId={patient.id}
+                  patientName={patient.name}
+                  clinicId={patient.clinic_id}
+                  assignments={patient.assigned_staff || []}
+                  onAssignmentsUpdate={fetchPatients}
+                />
+              </div>
             </CardContent>
           </Card>
         ))}
